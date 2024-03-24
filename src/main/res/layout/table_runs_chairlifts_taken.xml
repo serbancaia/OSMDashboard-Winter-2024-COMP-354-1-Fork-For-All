@@ -64,7 +64,7 @@
                         android:layout_column="0"
                         android:layout_span="4"
                         android:padding="3dip"
-                        android:hint="Chairlift 1"
+                        android:hint="Chairlift X"
                         android:textSize="25sp"
                         android:layout_weight="1"/>
                 </TableRow>
