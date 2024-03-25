@@ -90,6 +90,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import de.storchp.opentracks.osmplugin.dashboardapi.APIConstants;
 import de.storchp.opentracks.osmplugin.dashboardapi.Chairlift;
+import de.storchp.opentracks.osmplugin.dashboardapi.Runs;
 import de.storchp.opentracks.osmplugin.dashboardapi.Track;
 import de.storchp.opentracks.osmplugin.dashboardapi.TrackPoint;
 import de.storchp.opentracks.osmplugin.dashboardapi.Waypoint;
@@ -653,6 +654,15 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
         Chairlift c2 = new Chairlift("L'Atomic Express",20, 500, 600, 5.08);
         list.add(c1);
         list.add(c2);
+        return list;
+    }
+
+    private List<Runs> getRuns() {
+        List<Runs> list = new ArrayList<>();
+        Runs r1 = new Runs("Runs 1",18, 1500, 2000, 30.25);
+        Runs r2 = new Runs("Runs 2",17, 1800, 2500, 40.7);
+        list.add(r1);
+        list.add(r2);
         return list;
     }
 
