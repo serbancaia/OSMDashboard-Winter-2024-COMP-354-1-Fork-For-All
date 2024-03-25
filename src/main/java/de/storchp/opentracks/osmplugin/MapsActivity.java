@@ -96,7 +96,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import de.storchp.opentracks.osmplugin.dashboardapi.APIConstants;
 import de.storchp.opentracks.osmplugin.dashboardapi.Chairlift;
-import de.storchp.opentracks.osmplugin.dashboardapi.Runs;
+import de.storchp.opentracks.osmplugin.dashboardapi.Run;
 import de.storchp.opentracks.osmplugin.dashboardapi.Track;
 import de.storchp.opentracks.osmplugin.dashboardapi.TrackPoint;
 import de.storchp.opentracks.osmplugin.dashboardapi.Waypoint;
@@ -151,7 +151,7 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
     private int protocolVersion = 1;
     private TrackPointsDebug trackPointsDebug;
     //Dummy data for runs
-    private List<Runs> runs;
+    private List<Run> runs;
     //Dummy data for chairlifts
     private List<Chairlift> chairLifts;
 
@@ -658,12 +658,12 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
     }
 
     // Get info from Group #7
-    private List<Runs> getRuns() {
-        List<Runs> list = new ArrayList<>();
-        Runs r1 = new Runs("La Plagne",18, 1644, 2000, 30.25);
-        Runs r2 = new Runs("Jay",26, 931, 1100, 40.7);
-        Runs r3 = new Runs("Grand Élan",23, 1051, 1200, 27.67);
-        Runs r4 = new Runs("Tom Barbeau",30, 658, 700, 42.6);
+    private List<Run> getRuns() {
+        List<Run> list = new ArrayList<>();
+        Run r1 = new Run("La Plagne",18, 1644, 2000, 30.25);
+        Run r2 = new Run("Jay",26, 931, 1100, 40.7);
+        Run r3 = new Run("Grand Élan",23, 1051, 1200, 27.67);
+        Run r4 = new Run("Tom Barbeau",30, 658, 700, 42.6);
         list.add(r1);
         list.add(r2);
         list.add(r3);
@@ -697,7 +697,7 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
         headers.add("Max Speed (km/h)");
         headers.add("Run Time (min:sec)");
         headers.add("Distance (meters)");
-        for (Runs run : runs) {
+        for (Run run : runs) {
             TableRow runRow = new TableRow(this);
             TableLayout existView = (TableLayout) findViewById(R.id.runsChairliftsTableView);
             View runView = getLayoutInflater()
@@ -712,7 +712,7 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
             maxSpeed.setText(formatter.format(run.getMaxSpeed()));
 
             TextView runTime = (TextView) runView.findViewById(R.id.runTimeInput);
-            runTime.setText(DateUtils.formatElapsedTime(run.getRunTime()));
+            runTime.setText(DateUtils.formatElapsedTime(run.getDuration()));
 
             TextView distance = (TextView) runView.findViewById(R.id.distanceInput);
             distance.setText(formatter.format(run.getDistance()));
