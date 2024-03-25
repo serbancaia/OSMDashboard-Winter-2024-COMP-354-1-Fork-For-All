@@ -150,6 +150,8 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
     private int strokeWidth;
     private int protocolVersion = 1;
     private TrackPointsDebug trackPointsDebug;
+    //Dummy data for runs
+    private List<Runs> runs;
     //Dummy data for chairlifts
     private List<Chairlift> chairLifts;
 
@@ -214,6 +216,7 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
             readTrackpoints(trackPointsUri, false, protocolVersion);
             readTracks(tracksUri);
             readWaypoints(waypointsUri);
+            addRunsInfo();
             addChairliftsInfo();
         } else if ("geo".equals(intent.getScheme())) {
             Waypoint.fromGeoUri(intent.getData().toString()).ifPresent(waypoint -> {
@@ -655,6 +658,20 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
     }
 
     // Get info from Group #7
+    private List<Runs> getRuns() {
+        List<Runs> list = new ArrayList<>();
+        Runs r1 = new Runs("La Plagne",18, 1644, 2000, 30.25);
+        Runs r2 = new Runs("Jay",26, 931, 1100, 40.7);
+        Runs r3 = new Runs("Grand Élan",23, 1051, 1200, 27.67);
+        Runs r4 = new Runs("Tom Barbeau",30, 658, 700, 42.6);
+        list.add(r1);
+        list.add(r2);
+        list.add(r3);
+        list.add(r4);
+        return list;
+    }
+
+    // Get info from Group #7
     private List<Chairlift> getChairlifts() {
         List<Chairlift> list = new ArrayList<>();
         Chairlift c1 = new Chairlift("L'Étoile", 722, 600, 5.08);
@@ -668,13 +685,40 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
         return list;
     }
 
-    private List<Runs> getRuns() {
-        List<Runs> list = new ArrayList<>();
-        Runs r1 = new Runs("Runs 1",18, 1500, 2000, 30.25);
-        Runs r2 = new Runs("Runs 2",17, 1800, 2500, 40.7);
-        list.add(r1);
-        list.add(r2);
-        return list;
+    /**
+     * This method creates a row inside the table in OSMDashboard to display
+     * user's data about a specific run.
+     */
+    private void addRunsInfo() {
+        runs = getRuns();
+        DecimalFormat formatter = new DecimalFormat("#0.00");
+        List<String> headers = new ArrayList<>();
+        headers.add("Avg Speed (km/h)");
+        headers.add("Max Speed (km/h)");
+        headers.add("Run Time (min:sec)");
+        headers.add("Distance (meters)");
+        for (Runs run : runs) {
+            TableRow runRow = new TableRow(this);
+            TableLayout existView = (TableLayout) findViewById(R.id.runsChairliftsTableView);
+            View runView = getLayoutInflater()
+                    .inflate(R.layout.run_item, null);
+            TextView name = (TextView) runView.findViewById(R.id.item_Name);
+            name.setText(run.getName());
+
+            TextView avgSpeed = (TextView) runView.findViewById(R.id.avgSpeedInput);
+            avgSpeed.setText(formatter.format(run.getAverageSpeed()));
+
+            TextView maxSpeed = (TextView) runView.findViewById(R.id.maxSpeedInput);
+            maxSpeed.setText(formatter.format(run.getMaxSpeed()));
+
+            TextView runTime = (TextView) runView.findViewById(R.id.runTimeInput);
+            runTime.setText(DateUtils.formatElapsedTime(run.getRunTime()));
+
+            TextView distance = (TextView) runView.findViewById(R.id.distanceInput);
+            distance.setText(formatter.format(run.getDistance()));
+
+            existView.addView(runView);
+        }
     }
 
     // Add chairlifts info
@@ -682,10 +726,10 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
         chairLifts = getChairlifts();
         DecimalFormat formatter = new DecimalFormat("#0.00");
         List<String> headers = new ArrayList<>();
-        headers.add("Speed (m)");
-        headers.add("Wait Time (m:s)");
-        headers.add("Ascent Time (m:s)");
-        headers.add("Distance (m)");
+        headers.add("Speed (m/s)");
+        headers.add("Wait Time (min:sec)");
+        headers.add("Ascent Time (min:sec)");
+        headers.add("Distance (meters)");
         for (Chairlift c : chairLifts) {
             TableRow chairRow = new TableRow(this);
             TableLayout existView = (TableLayout) findViewById(R.id.runsChairliftsTableView);
@@ -707,11 +751,7 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
             distance.setText(formatter.format(c.getDistance()));
 
             existView.addView(chairliftView);
-
-
         }
-
-
     }
 
     private void resetMapData() {

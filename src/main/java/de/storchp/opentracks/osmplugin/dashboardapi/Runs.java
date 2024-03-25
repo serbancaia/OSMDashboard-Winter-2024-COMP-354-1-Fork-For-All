@@ -8,7 +8,7 @@ import java.util.List;
  * skiing track.
  *
  * This class is used to provide dummy data for group 17's which involves displaying
- * certain run statistics in OSMDashboard until the statistics team implement their
+ * certain run statistics in OSMDashboard until the statistics team implements their
  * functionalities involving passing this necessary data to the teams working on
  * OSMDashboard.
  *
@@ -23,6 +23,9 @@ public class Runs
     private int runtime;
     private double maxSpeed; //Going to use Trackpoint.Speed variable
 
+    private List<TrackPoint> trackPointCollection; //List of TrackPoints that are associated to a
+    // specific run the user recorded themselves on during a track
+
     //Constructors
     public Runs()
     {
@@ -31,6 +34,7 @@ public class Runs
         this.distance = 0;
         this.runtime = 0;
         this.maxSpeed = 0;
+        this.trackPointCollection = null;
     }
 
     public Runs(String inName, int inAvgSpeed, int inDistance, int inRunTime, double inMaxSpeed)
@@ -40,13 +44,17 @@ public class Runs
         this.distance = inDistance;
         this.runtime = inRunTime;
         this.maxSpeed = inMaxSpeed;
+        this.trackPointCollection = null;
     }
 
-    public Runs(String inName, int inRunTime, double inMaxSpeed)
+    public Runs(String inName, int inAvgSpeed, int inDistance, int inRunTime, double inMaxSpeed, List<TrackPoint> trackPointCollection)
     {
         this.name = inName;
+        this.averageSpeed = inAvgSpeed;
+        this.distance = inDistance;
         this.runtime = inRunTime;
         this.maxSpeed = inMaxSpeed;
+        this.trackPointCollection = trackPointCollection;
     }
 
     public Runs(Runs runsObj)
@@ -56,39 +64,34 @@ public class Runs
         this.distance = runsObj.distance;
         this.runtime = runsObj.runtime;
         this.maxSpeed = runsObj.maxSpeed;
+        this.trackPointCollection = runsObj.trackPointCollection;
     }
 
     //Getters
-    public String getName()
-    {
-        return this.name;
-    }
+    public String getName() { return this.name; }
 
-    public int getRuntime()
-    {
-        return this.runtime;
-    }
+    public double getAverageSpeed() { return this.averageSpeed; }
 
-    public double getMaxSpeed()
-    {
-        return this.maxSpeed;
-    }
+    public double getDistance() { return this.distance; }
+
+    public int getRunTime() { return this.runtime; }
+
+    public double getMaxSpeed() { return this.maxSpeed; }
+
+    public List<TrackPoint> getTrackPointCollection() { return this.trackPointCollection; }
 
     //Setters
-    public void setName(String inName)
-    {
-        this.name = inName;
-    }
+    public void setName(String inName) { this.name = inName; }
 
-    public void setRuntime(int inRunTime)
-    {
-        this.runtime = inRunTime;
-    }
+    public void setAverageSpeed(int inAvgSpeed) { this.averageSpeed = inAvgSpeed; }
 
-    public void setMaxSpeed(double inMaxSpeed)
-    {
-        this.maxSpeed = inMaxSpeed;
-    }
+    public void setDistance(double inDistance) { this.distance = inDistance; }
+
+    public void setRunTime(int inRunTime) { this.runtime = inRunTime; }
+
+    public void setMaxSpeed(double inMaxSpeed) { this.maxSpeed = inMaxSpeed; }
+
+    public void setTrackPointCollection(List<TrackPoint> trackPointCollection) { this.trackPointCollection = trackPointCollection; }
 
     /**
      * The real data  for the total run time is suppose to be fetched from a "statistic team".
@@ -128,6 +131,7 @@ public class Runs
 
         return maximumSpeed;
     }
+
     /**
      * Calculates the average speed of an entire run given a list of TrackPoints belonging to a run
      * the user skied on (km/h).
@@ -169,6 +173,7 @@ public class Runs
         TrackPoint trackPoint2 = null;
 
         for (TrackPoint i : trackPointCollection){
+            if(i == null) { continue; }
             if(trackPoint1 == null){
                 trackPoint1 = i;
             }

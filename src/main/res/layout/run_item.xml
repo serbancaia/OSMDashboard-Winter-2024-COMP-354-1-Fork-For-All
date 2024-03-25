@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/runView"
     >
 
@@ -32,22 +32,22 @@
                 <TextView
                     android:layout_column="0"
                     android:padding="3dip"
-                    android:text="Avg Speed (km/h):"
+                    android:text="Avg Speed (km/h)"
                     android:layout_weight="1" />
                 <TextView
                     android:layout_column="1"
                     android:padding="3dip"
-                    android:text="Max Speed (km/h):"
+                    android:text="Max Speed (km/h)"
                     android:layout_weight="1" />
                 <TextView
                     android:layout_column="2"
                     android:padding="3dip"
-                    android:text="Run Time (min:sec):"
+                    android:text="Run Time (min:sec)"
                     android:layout_weight="1" />
                 <TextView
                     android:layout_column="3"
                     android:padding="3dip"
-                    android:text="Distance (meters):"
+                    android:text="Distance (meters)"
                     android:layout_weight="1" />
             </TableRow>
             <TableRow
