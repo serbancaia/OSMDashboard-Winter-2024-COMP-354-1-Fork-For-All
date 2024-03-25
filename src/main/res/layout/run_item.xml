@@ -2,7 +2,7 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/chairLiftView"
+    android:id="@+id/runView"
     >
 
     <View
@@ -24,31 +24,30 @@
                     android:layout_span="4"
                     android:padding="3dip"
                     android:id="@+id/item_Name"
-                    android:hint="Chairlift 1"
+                    android:hint="Run A"
                     android:textSize="20sp"
                     android:layout_weight="1" />
             </TableRow>
-            <TableRow
-                android:layout_weight="1">
+            <TableRow>
                 <TextView
                     android:layout_column="0"
                     android:padding="3dip"
-                    android:text="Speed (m/s)"
+                    android:text="Avg Speed (km/h):"
                     android:layout_weight="1" />
                 <TextView
                     android:layout_column="1"
                     android:padding="3dip"
-                    android:text="Wait Time (min:sec)"
+                    android:text="Max Speed (km/h):"
                     android:layout_weight="1" />
                 <TextView
                     android:layout_column="2"
                     android:padding="3dip"
-                    android:text="Ascent Time (min:sec)"
+                    android:text="Run Time (min:sec):"
                     android:layout_weight="1" />
                 <TextView
                     android:layout_column="3"
                     android:padding="3dip"
-                    android:text="Distance (meters)"
+                    android:text="Distance (meters):"
                     android:layout_weight="1" />
             </TableRow>
             <TableRow
@@ -56,19 +55,19 @@
                 <TextView
                     android:layout_column="0"
                     android:padding="3dip"
-                    android:id="@+id/speedInput"
+                    android:id="@+id/avgSpeedInput"
                     android:hint="input"
                     android:layout_weight="1" />
                 <TextView
                     android:layout_column="1"
                     android:padding="3dip"
-                    android:id="@+id/waitTimeInput"
+                    android:id="@+id/maxSpeedInput"
                     android:hint="input"
                     android:layout_weight="1" />
                 <TextView
                     android:layout_column="2"
                     android:padding="3dip"
-                    android:id="@+id/ascentTimeInput"
+                    android:id="@+id/runTimeInput"
                     android:hint="input"
                     android:layout_weight="1" />
                 <TextView
