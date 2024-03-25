@@ -694,16 +694,16 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
             TextView name = (TextView) chairliftView.findViewById(R.id.item_Name);
             name.setText(c.getName());
 
-            TextView speed = (TextView) chairliftView.findViewById(R.id.speed);
+            TextView speed = (TextView) chairliftView.findViewById(R.id.speedInput);
             speed.setText(formatter.format(c.getAverageSpeed()));
 
-            TextView waitingTime = (TextView) chairliftView.findViewById(R.id.wTime);
+            TextView waitingTime = (TextView) chairliftView.findViewById(R.id.waitTimeInput);
             waitingTime.setText(DateUtils.formatElapsedTime(c.getWaitingTime()));
 
-            TextView aTime = (TextView) chairliftView.findViewById(R.id.aTime);
+            TextView aTime = (TextView) chairliftView.findViewById(R.id.ascentTimeInput);
             aTime.setText(DateUtils.formatElapsedTime(c.getAscentTime()));
 
-            TextView distance = (TextView) chairliftView.findViewById(R.id.distance);
+            TextView distance = (TextView) chairliftView.findViewById(R.id.distanceInput);
             distance.setText(formatter.format(c.getDistance()));
 
             existView.addView(chairliftView);

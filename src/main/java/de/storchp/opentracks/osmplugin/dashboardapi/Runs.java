@@ -2,7 +2,19 @@ package de.storchp.opentracks.osmplugin.dashboardapi;
 
 import java.util.List;
 
-
+/**
+ * (Group 17) This object class represents a run based on data from recorded tracks.
+ * It contains methods that can bu used to display relevant information about a user's
+ * skiing track.
+ *
+ * This class is used to provide dummy data for group 17's which involves displaying
+ * certain run statistics in OSMDashboard until the statistics team implement their
+ * functionalities involving passing this necessary data to the teams working on
+ * OSMDashboard.
+ *
+ * @author danbin & serbancaia
+ * @version 2024/03/25
+ */
 public class Runs
 {
     private String name;
@@ -79,8 +91,9 @@ public class Runs
     }
 
     /**
-     * The real data  for the total run time is suppose to be fetch from a "statistic team". For , we will implement a small
-     * algorithm to calculate time and will Dummy data for Sprint 2
+     * The real data  for the total run time is suppose to be fetched from a "statistic team".
+     * For now, we will implement a small algorithm to calculate time and will use Dummy data
+     * for Sprint 2
      *
      */
     private double calculateTotalRunTime(List<TrackPoint> trackPointCollection)
@@ -95,8 +108,12 @@ public class Runs
         return returnValue;
     }
 
-    //Method to calculate the max speed
-    //Important to know that on OPENTRACKS at class TrackStatistics have a attribute total Duration time
+    /**
+     * Method to calculate the max speed
+     * Important to know that on OPENTRACKS at class TrackStatistics have an attribute called
+     * total Duration time
+     */
+
     private double calculateMaxSpeed(List<TrackPoint> trackPointCollection)
     {
         double maximumSpeed = trackPointCollection.get(0).getSpeed();
@@ -110,6 +127,63 @@ public class Runs
         }
 
         return maximumSpeed;
+    }
+    /**
+     * Calculates the average speed of an entire run given a list of TrackPoints belonging to a run
+     * the user skied on (km/h).
+     *
+     * @param trackPointCollection List of TrackPoints belonging to a run
+     * @return user's average speed during the entire run in km/h
+     * @author serbancaia
+     */
+    private double calculateAverageSpeedKmPerHour(List<TrackPoint> trackPointCollection)
+    {
+        double averageRunSpeed = 0;
+        int countSegments = -1;
+
+        for (TrackPoint trackPoint : trackPointCollection){
+            if(countSegments > -1){
+                averageRunSpeed+=trackPoint.getSpeed();
+            }
+            countSegments++;
+        }
+
+        if(countSegments < 1)
+            return 0;
+        else
+            return averageRunSpeed/countSegments;
+    }
+
+    /**
+     * Calculates the distance of an entire run given a list of TrackPoints belonging to a run
+     * the user skied on (meters).
+     *
+     * @param trackPointCollection List of TrackPoints belonging to a run
+     * @return user's travelled distance during the entire run in meters
+     * @author serbancaia
+     */
+    private double calculateDistanceInMeters(List<TrackPoint> trackPointCollection)
+    {
+        double distanceSum = 0;
+        TrackPoint trackPoint1 = null;
+        TrackPoint trackPoint2 = null;
+
+        for (TrackPoint i : trackPointCollection){
+            if(trackPoint1 == null){
+                trackPoint1 = i;
+            }
+            else if(trackPoint2 == null){
+                trackPoint2 = i;
+                distanceSum+=trackPoint1.getLatLong().sphericalDistance(trackPoint2.getLatLong());
+            }
+            else{
+                trackPoint1 = trackPoint2;
+                trackPoint2 = i;
+                distanceSum+=trackPoint1.getLatLong().sphericalDistance(trackPoint2.getLatLong());
+            }
+        }
+
+        return distanceSum;
     }
 }
 
