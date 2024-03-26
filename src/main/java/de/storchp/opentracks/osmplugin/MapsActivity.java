@@ -34,7 +34,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -102,6 +105,7 @@ import javax.microedition.khronos.opengles.GL10;
 import de.storchp.opentracks.osmplugin.dashboardapi.APIConstants;
 import de.storchp.opentracks.osmplugin.dashboardapi.Chairlift;
 import de.storchp.opentracks.osmplugin.dashboardapi.Run;
+import de.storchp.opentracks.osmplugin.dashboardapi.Segment;
 import de.storchp.opentracks.osmplugin.dashboardapi.Track;
 import de.storchp.opentracks.osmplugin.dashboardapi.TrackPoint;
 import de.storchp.opentracks.osmplugin.dashboardapi.Waypoint;
@@ -162,13 +166,15 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
     private int protocolVersion = 1;
     private TrackPointsDebug trackPointsDebug;
     //Dummy data for runs
-    private List<Run> runs;
+    private List<Run> runs = new ArrayList<>();
     //Dummy data for chairlifts
-    private List<Chairlift> chairLifts;
+    private List<Chairlift> chairLifts = new ArrayList<>();
+    private List<Segment> segments = new ArrayList<>();
     private LocationManager locationManager;
     private LocationListener locationListener;
     private ItemizedLayer userLocationLayer;
     private MarkerItem userLocationMarker;
+    private FrameLayout containerLayout;
 
     @SuppressLint("ServiceCast")
     @Override
@@ -223,6 +229,10 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
         }catch (SecurityException e){
             e.printStackTrace();
         }
+        // setting initial table to runs and chairlifts table
+        inflateLayout(R.layout.table_runs_chairlifts_taken);
+        addRunsInfo();
+        addChairliftsInfo();
     }
 
     public void updateUserLocation(GeoPoint userLocation){
@@ -263,8 +273,33 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
             readTrackpoints(trackPointsUri, false, protocolVersion);
             readTracks(tracksUri);
             readWaypoints(waypointsUri);
-            addRunsInfo();
-            addChairliftsInfo();
+
+            // run logic
+            getRuns();
+
+            //  chairlift logic
+            getChairlifts();
+
+            // segments logic
+            getSegments();
+
+            // navigation Buttons
+            containerLayout = findViewById(R.id.container_layout);
+            Button runsChairLiftsButton = findViewById(R.id.runsChairLiftsButton);
+            Button segmentsButton = findViewById(R.id.segmentsButton);
+
+            // button Listeners
+            runsChairLiftsButton.setOnClickListener(v -> {
+                inflateLayout(R.layout.table_runs_chairlifts_taken);
+                addRunsInfo();
+                addChairliftsInfo();
+            });
+
+            segmentsButton.setOnClickListener(v -> {
+                inflateLayout(R.layout.table_segments);
+                addSegmentInfo();
+            });
+
         } else if ("geo".equals(intent.getScheme())) {
             Waypoint.fromGeoUri(intent.getData().toString()).ifPresent(waypoint -> {
                 final MarkerItem marker = MapUtils.createTappableMarker(this, waypoint);
@@ -273,6 +308,12 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
                 map.getMapPosition().setZoomLevel(map.viewport().getMaxZoomLevel());
             });
         }
+    }
+
+
+    private void inflateLayout(int layoutId) {
+        containerLayout.removeAllViews();
+        LayoutInflater.from(this).inflate(layoutId, containerLayout, true);
     }
 
     private class OpenTracksContentObserver extends ContentObserver {
@@ -710,31 +751,27 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
     }
 
     // Get info from Group #7
-    private List<Run> getRuns() {
-        List<Run> list = new ArrayList<>();
+    private void getRuns() {
         Run r1 = new Run("La Plagne",18, 1644, 2000, 30.25);
         Run r2 = new Run("Jay",26, 931, 1100, 40.7);
         Run r3 = new Run("Grand Élan",23, 1051, 1200, 27.67);
         Run r4 = new Run("Tom Barbeau",30, 658, 700, 42.6);
-        list.add(r1);
-        list.add(r2);
-        list.add(r3);
-        list.add(r4);
-        return list;
+        runs.add(r1);
+        runs.add(r2);
+        runs.add(r3);
+        runs.add(r4);
     }
 
     // Get info from Group #7
-    private List<Chairlift> getChairlifts() {
-        List<Chairlift> list = new ArrayList<>();
+    private void getChairlifts() {
         Chairlift c1 = new Chairlift("L'Étoile", 722, 600, 5.08);
-        Chairlift c2 = new Chairlift("Flèche d’Argent",841, 900, 5.08);
+        Chairlift c2 = new Chairlift("Flèche d’Argent", 841, 900, 5.08);
         Chairlift c3 = new Chairlift("L'Express",672, 700, 5.08);
         Chairlift c4 = new Chairlift("Le Piedmont",755, 600, 5.08);
-        list.add(c1);
-        list.add(c2);
-        list.add(c3);
-        list.add(c4);
-        return list;
+        chairLifts.add(c1);
+        chairLifts.add(c2);
+        chairLifts.add(c3);
+        chairLifts.add(c4);
     }
 
     /**
@@ -742,7 +779,6 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
      * user's data about a specific run.
      */
     private void addRunsInfo() {
-        runs = getRuns();
         DecimalFormat formatter = new DecimalFormat("#0.00");
         List<String> headers = new ArrayList<>();
         headers.add("Avg Speed (km/h)");
@@ -775,7 +811,6 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
 
     // Add chairlifts info
     private void addChairliftsInfo() {
-        chairLifts = getChairlifts();
         DecimalFormat formatter = new DecimalFormat("#0.00");
         List<String> headers = new ArrayList<>();
         headers.add("Speed (m/s)");
@@ -785,8 +820,7 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
         for (Chairlift c : chairLifts) {
             TableRow chairRow = new TableRow(this);
             TableLayout existView = (TableLayout) findViewById(R.id.runsChairliftsTableView);
-            View chairliftView = getLayoutInflater()
-                    .inflate(R.layout.chairlift_item, null);
+            View chairliftView = getLayoutInflater().inflate(R.layout.chairlift_item, null);
             TextView name = (TextView) chairliftView.findViewById(R.id.item_Name);
             name.setText(c.getName());
 
@@ -803,6 +837,41 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
             distance.setText(formatter.format(c.getDistance()));
 
             existView.addView(chairliftView);
+        }
+    }
+
+    private void getSegments() {
+        Segment s1 = new Segment("Segment 1", 15, 5, 5);
+        Segment s2 = new Segment("Segment 2",30, 5, 15);
+        Segment s3 = new Segment("Segment 3",20, 5, 28);
+        Segment s4 = new Segment("Segment 4",17, 5, 31);
+        segments.add(s1);
+        segments.add(s2);
+        segments.add(s3);
+        segments.add(s4);
+    }
+
+    private void addSegmentInfo() {
+        DecimalFormat formatter = new DecimalFormat("#0.00");
+        for (Segment segment : segments) {
+            TableLayout segmentTable = (TableLayout) findViewById(R.id.segmentsTableView);
+            View segmentView = getLayoutInflater().inflate(R.layout.segment_item, null);
+            TextView name = (TextView) segmentView.findViewById(R.id.item_Name);
+            name.setText(segment.getName());
+
+            TextView speed = (TextView) segmentView.findViewById(R.id.speed);
+            speed.setText(formatter.format(segment.getSpeed()));
+
+            TextView time = (TextView) segmentView.findViewById(R.id.time);
+            time.setText(DateUtils.formatElapsedTime(segment.getTime()));
+
+            TextView slope = (TextView) segmentView.findViewById(R.id.slope);
+            slope.setText(formatter.format(segment.getSlope()));
+
+            TextView distance = (TextView) segmentView.findViewById(R.id.distance);
+            distance.setText(formatter.format(segment.getDistance()));
+
+            segmentTable.addView(segmentView);
         }
     }
 

@@ -1,14 +1,7 @@
 package de.storchp.opentracks.osmplugin.dashboardapi;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JComponent;
 
 /**
  * (Collaborated by teams 17 & 18) This class represents a ski run object.
@@ -251,63 +244,5 @@ public class Run {
         }
 
         return distanceSum;
-    }
-
-    // Method to display run information in a table
-    // to be replaced with a compatible GUI based table
-    public void displayTable() {
-        System.out.println("+--------------------------------------------------------+");
-        System.out.println("|                        Run Info                        |");
-        System.out.println("+--------------------------------------------------------+");
-        System.out.printf("| %-20s | %-18s |\n", "Name", name);
-        System.out.printf("| %-20s | %-18.2f |\n", "Distance", distance);
-        System.out.printf("| %-20s | %-18d |\n", "Duration", duration);
-        System.out.println("+--------------------------------------------------------+");
-
-        // Display chairlifts information
-        System.out.println("\nChairlifts:");
-        for (Chairlift chairlift : chairlifts) {
-            System.out.printf("- %s (Elevation Gain: %.2f, Waiting Time: %d, Total Time Moving: %d, Average Speed: %.2f)\n",
-                    chairlift.getName(), chairlift.getElevationGain(), chairlift.getWaitingTime(),
-                    chairlift.getAverageSpeed());
-        }
-        System.out.println("+--------------------------------------------------------+");
-    }
-
-    class drawingRun extends JComponent {
-        public void paintRun(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setStroke(new BasicStroke(7));
-
-            double[] x2Points = {0, 100, 200, 300, 400, 500}; //replace dummy data with lat array at future date
-            double[] y2Points = {250, 20, 100, 40, 50, 60}; //replace dummy data with long array at future date
-
-            for (int i = 0; i < x2Points.length - 1; i++) {
-                Line2D.Double line = new Line2D.Double(x2Points[i], y2Points[i], x2Points[i + 1], y2Points[i + 1]);
-                switch (i) {
-                    case 0:
-                        g2.setPaint(Color.BLACK);
-                        break;
-                    case 1:
-                        g2.setPaint(Color.BLUE);
-                        break;
-                    case 2:
-                        g2.setPaint(Color.CYAN);
-                        break;
-                    case 3:
-                        g2.setPaint(Color.DARK_GRAY);
-                        break;
-                    case 4:
-                        g2.setPaint(Color.GRAY);
-                        break;
-                    case 5:
-                        g2.setPaint(Color.GREEN);
-                        break;
-                    default:
-                        g2.setPaint(Color.MAGENTA);
-                }
-                g2.draw(line);
-            }
-        }
     }
 }

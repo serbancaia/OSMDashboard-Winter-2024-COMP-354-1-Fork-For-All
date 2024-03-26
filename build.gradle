@@ -5,7 +5,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.3.0'
+        classpath 'com.android.tools.build:gradle:8.2.1'
     }
 }
 
@@ -91,6 +91,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
     lint {
         disable 'MissingTranslation'
@@ -119,8 +120,6 @@ ext {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation-jvm:1.7.1'
-
 
     // Desugaring
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
