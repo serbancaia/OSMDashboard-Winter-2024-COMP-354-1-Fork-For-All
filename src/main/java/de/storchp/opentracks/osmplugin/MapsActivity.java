@@ -829,7 +829,8 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
             waitingTime.setText(DateUtils.formatElapsedTime(c.getWaitingTime()));
 
             TextView aTime = (TextView) chairliftView.findViewById(R.id.aTime);
-            aTime.setText(DateUtils.formatElapsedTime(c.getAscentTime()));
+            //Note for devs c.getAscentTime() changed to c.getTotalTimeMoving() (same functionality different name)
+            aTime.setText(DateUtils.formatElapsedTime(c.getTotalTimeMoving()));
 
             TextView distance = (TextView) chairliftView.findViewById(R.id.distance);
             distance.setText(formatter.format(c.getDistance()));
