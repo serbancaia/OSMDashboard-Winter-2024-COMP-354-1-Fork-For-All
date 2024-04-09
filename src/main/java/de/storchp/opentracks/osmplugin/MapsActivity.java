@@ -40,6 +40,10 @@ import org.oscim.android.MapPreferences;
 import org.oscim.backend.CanvasAdapter;
 import org.oscim.core.BoundingBox;
 import org.oscim.core.GeoPoint;
+import org.oscim.event.Gesture;
+import org.oscim.event.GestureListener;
+import org.oscim.event.MotionEvent;
+import org.oscim.layers.Layer;
 import org.oscim.layers.GroupLayer;
 import org.oscim.layers.PathLayer;
 import org.oscim.layers.marker.ItemizedLayer;
@@ -94,6 +98,7 @@ import de.storchp.opentracks.osmplugin.maps.MovementDirection;
 import de.storchp.opentracks.osmplugin.maps.StyleColorCreator;
 import de.storchp.opentracks.osmplugin.utils.MapMode;
 import de.storchp.opentracks.osmplugin.utils.MapUtils;
+import de.storchp.opentracks.osmplugin.utils.MyOverpassAPIReader;
 import de.storchp.opentracks.osmplugin.utils.PreferencesUtils;
 import de.storchp.opentracks.osmplugin.utils.StatisticElement;
 import de.storchp.opentracks.osmplugin.utils.TrackColorMode;
@@ -140,6 +145,48 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
     private int protocolVersion = 1;
     private TrackPointsDebug trackPointsDebug;
 
+    static class MapEventsReceiver extends Layer implements GestureListener {
+        private static final String query = """
+                [out:json];
+                (
+                  way["piste:type"="downhill"]({{bbox}});
+                  way["piste:type"="nordic"]({{bbox}});
+                  way["piste:grooming"]({{bbox}});
+                  way["aerialway"="chair_lift"]({{bbox}});
+                  way["aerialway"="gondola"]({{bbox}});
+                  way["aerialway"="drag_lift"]({{bbox}});
+                );
+                out body;""";
+
+        MapEventsReceiver(Map map) {
+            super(map);
+        }
+
+        @Override
+        public boolean onGesture(Gesture g, MotionEvent e) {
+            if (g instanceof Gesture.Tap) {
+                new Thread(() -> {
+
+                    var bBox = mMap.getBoundingBox(0);
+                    System.out.println("Querying for BBox: " + bBox);
+
+                    var op = new MyOverpassAPIReader(bBox, query);
+                    op.parseInputStream();
+                    var data = op.getData().getWays().stream().findFirst();
+                    data.ifPresent(osmWay -> osmWay.nodes.forEach((node) -> {
+                        System.out.println("Node: " + node.toString());
+                    }));
+                    System.out.println("Data: " + data);
+                    System.out.println();
+                    System.out.println(data);
+                }).start();
+//                GeoPoint p = mMap.viewport().fromScreenPoint(e.getX(), e.getY());
+                return true;
+            }
+            return false;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,6 +207,8 @@ public class MapsActivity extends BaseActivity implements ItemizedLayer.OnItemGe
         createMapViews();
         createLayers();
         map.getMapPosition().setZoomLevel(MAP_DEFAULT_ZOOM_LEVEL);
+
+        map.layers().add(new MapEventsReceiver(map));
 
         binding.map.fullscreenButton.setOnClickListener(v -> switchFullscreen());
 
